@@ -1,0 +1,106 @@
+{% extends "layouts/base.html" %} 
+
+{% load humanize %}
+{# load humanize ใช้กับฟังก์ชั่น intcomma}
+
+{# Send Title to Parent Component}
+{% block title %} Home page{% endblock %} 
+
+{# Start Content to Parent Component}
+{% block content %}
+<h1>Book List</h1>
+
+<div class="row">
+  <div class="col-12 col-lg-2">
+      <div class="list-group">
+        <a
+        href="{% url 'stock_book:index' %}"
+        class="
+          list-group-item list-group-item-action
+          {% if not categoried_id %}active{% endif %}"
+        aria-current="true"
+        >All</a
+      >
+      {% for item in categories %}
+      <a
+        href="{% url 'stock_book:index' %}?categoryid={{item.id}}"
+        class="
+          list-group-item list-group-item-action
+          {% if categoried_id|add:'0' == item.id %}active{% endif %}"
+        >{{item.name}}</a
+      >
+      {% endfor %}
+      </div>
+  </div>
+
+  <div class="clo-auto col-lg-10">
+    
+    <div class="row mt-3 mt-lg-0 ">
+      
+     {% for book in books%}
+     <div class="col-lg-3 mb-3">
+       <div class="card">
+         {% if book.image %}
+         <a href="{% url 'stock_book:detail' slug=book.slug %}">
+           <img src="{{book.image.url}}" alt="" class="card-img-top" />
+         </a>
+         {% endif %}
+
+         {% if not book.image %}
+         <a href="{% url 'stock_book:detail' slug=book.slug %}">
+           <center><img  src='../media/public/no_image_1.jpg' alt="" class="card-img-top" style='max-height: 150px; max-width: 150px;' /></center>
+         </a>
+         {% endif %}
+
+         <div class="card-body mb-4">
+           <p><a href="{% url 'stock_book:detail' slug=book.slug %}"><b>{{ book.name}}</b></a></p>
+
+           {% for author in book.author.all %}
+           <div>Author : {{author.name}} </div>
+           {% endfor %}
+
+           <div>Price : {{book.price|floatformat:2|intcomma}}</div>
+
+           <span>Category Tag :</span>   
+           <span class="badge bg-secondary">
+             {{book.category}}
+           </span>
+           
+           <br>
+
+           <a href="{% url 'stock_book:detail' slug=book.slug %}" class="btn btn-info mt-1">View detail</a>
+       </div>
+     </div>
+   </div>
+   {% endfor %}
+    </div>
+
+    <ul class="pagination mt-3">
+
+      <!-- ถ้าเขียนแบบ FBV ใช้ books ถ้าใช้ CBV ให้ใช้ page_obj -->
+      {% if page_obj.has_previous %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{page_obj.previous_page_number}}" tabindex="-1" aria-disabled="true">Previous</a>
+      </li>
+      {% endif %}
+  
+      {% for item in page_obj.paginator.page_range %}
+      <li class="page-item {% if page_obj.number == item %}active{% endif %}"><a class="page-link" href="?page={{item}}">{{item}}</a></li>
+      {% endfor %}
+  
+      {% if page_obj.has_next %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{page_obj.next_page_number}}">Next</a>
+      </li>
+      {% endif %}
+    </ul>
+
+       </div>
+  </div>
+</div>
+
+
+</div>
+
+<!-- End Content to Parent Component -->
+{% endblock %}

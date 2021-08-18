@@ -1,0 +1,95 @@
+{% extends "layouts/base.html" %} 
+
+{% load humanize %} 
+{# load humanize ใช้กับฟังก์ชั่น intcomma} 
+
+{# Send Title to Parent Component} 
+{% block title %} Shopping Cart {% endblock %} 
+
+{# Start Content to Parent Component} 
+{% block content %}
+<div class="row">
+  <div class="col-lg-6 offset-lg-3">
+    <h1>Cart List</h1>
+
+    <form method="post" action={% url 'stock_book:edit_qty' %}>
+      {% csrf_token %}
+      <table class="table" table-bordered>
+        <thead style="text-align: center">
+          <tr>
+            <th>Code</th>
+            <th>Name</th>
+            <th>Qty</th>
+            <th>Price</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for item in cart_items %}
+          <tr>
+            <td>{{item.code}}</td>
+            <td>
+              {{item.name}}
+              <input
+                type="text"
+                hidden
+                size="5"
+                name="slug"
+                value="{{item.slug}}"
+              />
+            </td>
+            <td style="text-align: center">
+              <input
+                type="number"
+                style="width: 60px"
+                value="{{item.qty}}"
+                name="qty"
+              />
+            </td>
+            <td style="text-align: center">{{item.price}}</td>
+            <td style="text-align: center">
+              <a
+                href="{% url 'stock_book:cart_delete' slug=item.slug %}"
+                class="btn btn-danger"
+              >
+                <i class="fas fa-trash"></i>
+                Delete
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+   
+
+    <div class="row">
+      <div class="col-6">
+        <button type="submit" class="btn btn-success me-1">
+          <i class="fas fa-save"></i>
+          Save
+        </button>
+
+        <a href="{% url 'stock_book:index' %}" class="btn btn-warning">
+          <i class="fas fa-backspace"></i>
+          Back
+        </a>
+
+        <a href="#" class="btn btn-danger">
+          <i class="fas fa-trash"></i>
+          Delete all
+        </a>
+      </div>
+    </div>
+  </form>
+    <a href="#" class="btn btn-danger btn-lg float-end">
+      <i class="fas fa-backspace"></i>
+      Check Out
+    </a>
+  </div>
+</div>
+
+<script></script>
+
+{% endblock %} 
+{# End Content to Parent Component}
