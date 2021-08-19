@@ -7,49 +7,51 @@
 
 {% block content %}
 
-<div class="row">
-    <div class="col-lg-3">
-        {% if book.image %}
-        <img src="{{ book.image.url }}" class=""alt="">
-        {% endif %}
-
-        {% if not book.image %}
-        <img src="../.././media/public/no_image.jpg" class=""alt="">
-        {% endif %}
-
-    </div>
-    <div class="col-lg-9">
-        <div class="row">
-            <div class="col-lg-9">
-                <h1> {{ book.name }} </h1>
-            </div>
-
-            <div class="col-lg-3">
-                <a href="{% url 'stock_book:index' %}" class="btn btn-primary">Back to book page</a>
-                
-            </div>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-3">
+            {% if book.image %}
+            <img src="{{ book.image.url }}" class=""alt="">
+            {% endif %}
+    
+            {% if not book.image %}
+            <img src="../.././media/public/no_image.jpg" class=""alt="">
+            {% endif %}
+    
         </div>
-        <span>Category : {{ book.category}}</span>
-        <br>
-        <span>Price : {{ book.price|floatformat:2|intcomma}}</span>
-        <br>
-        <a href="{% url 'stock_book:cart_add' slug=book.slug %}" class="btn btn-success" class="btn btn-success">Add Cart</a>
-       
+        <div class="col-lg-9">
+            <div class="row">
+                <div class="col-lg-9">
+                    <h1> {{ book.name }} </h1>
+                </div>
+    
+                <div class="col-lg-3">
+                    <a href="{% url 'stock_book:index' %}" class="btn btn-primary">Back to book page</a>
+                    
+                </div>
+            </div>
+            <span>Category : {{ book.category}}</span>
+            <br>
+            <span>Price : {{ book.price|floatformat:2|intcomma}}</span>
+            <br>
+            <a href="{% url 'stock_book:cart_add' slug=book.slug %}" class="btn btn-success" class="btn btn-success">Add Cart</a>
+           
+        </div>
+    
     </div>
-
-</div>
-
-<h1>Comment ({{book.get_comment_count}})</h1>
-
-{% for item in book.bookcomments_set.all %}
-<div class="card mb-4">
-    <div class="body-card">
-        <h5>{{item.comment}}</h5>
-        <div>Name: {{item.name}}</div>
-        <div>Rating: {{item.rating}}</div>
+    
+    <h4 class="mt-3">Comment ({{book.get_comment_count}})</h4>
+    
+    {% for item in book.bookcomments_set.all %}
+    <div class="card mb-4">
+        <div class="body-card">
+            <h5>{{item.comment}}</h5>
+            <div>Name: {{item.name}}</div>
+            <div>Rating: {{item.rating}}</div>
+        </div>
     </div>
-</div>
-{% endfor %}
+    {% endfor %}
+    </div>
 </div>
 
 {% endblock %}

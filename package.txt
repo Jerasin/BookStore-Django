@@ -1,2 +1,6 @@
 django
 mysqlclient
+django-crispy-forms 
+python-slugify
+django-taggit
+crispy-bootstrap5

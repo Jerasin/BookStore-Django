@@ -1,0 +1,47 @@
+{% extends "layouts/base.html" %} 
+{% load humanize %} 
+{# load humanize ใช้กับฟังก์ชั่น intcomma} 
+{% load crispy_forms_tags %} 
+{% block title %}Book Add{% endblock %} 
+{% block content %}
+<h1>Book Add</h1>
+
+<div class="row mb-5">
+  <!-- offset-lg-3 จองพื้นที่ฝั่งขวาและซ้ายอย่างละ 3 -->
+  <div class="col-lg-6 offset-lg-3">
+    <form method="post" enctype="multipart/form-data" novalidate>
+      {# csrf_token ใส่เพื่อความปลอดภัยของ form ดูได้จาก view page source #}
+      <!-- ตัวอย่าง <input type="hidden" name="csrfmiddlewaretoken"value="Bg7IDP47GbZFHWJfZbBdDnV2rQPGg4yDouP6rdMXcUkgyJxJTIbkOB0xFlkSc2XH"> -->
+      {% csrf_token %} 
+      {# .as_p ทำให้ทุก Element ของ form คลุมด้วย tag p หรือ.as_table ทำให้ทุก Element ของ form คลุมด้วย tag table #} 
+      {{ form|crispy}}
+
+      <!-- <div class="mb-3">     
+                <input type="file" name="image" class="clearablefileinput" id="id_images"> 
+            </div> -->
+      <div class="mb-3">
+        <img id="blah" src="#" alt="your image" />
+      </div>
+      <div class="row float-end">
+        <div class="col-lg-6">
+          <button class="btn btn-success" type="submit">Save</button>
+        </div>
+        <div class="col-lg-6">
+          <a href="{% url 'stock_book:index' %}" class="btn btn-danger">Cancel</a>
+        </div>
+      </div>
+      <br />
+    </form>
+  </div>
+</div>
+
+<script>
+  id_image.onchange = (e) => {
+    const [file] = id_image.files;
+    if (file) {
+      blah.src = URL.createObjectURL(file);
+    }
+  };
+</script>
+
+{% endblock %}

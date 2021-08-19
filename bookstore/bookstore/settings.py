@@ -38,8 +38,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
-    'stock_book'
+    'crispy_forms',
+    "crispy_bootstrap5",
+    'stock_book',
 ]
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+
+CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -136,6 +142,8 @@ MEDIA_ROOT = Path(BASE_DIR , 'media')
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
 
 #Handle session is not Json Serializable
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'

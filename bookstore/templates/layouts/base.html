@@ -22,7 +22,6 @@
 
     <!-- This Content Children Titles Components -->
     <title>{% block title %} Test Project {% endblock %}</title>
-    
   </head>
   <body>
     <div class="container-fluid py-3">
@@ -61,27 +60,82 @@
           </a>
 
           <nav class="d-inline-flex mt-2 mt-md-0 ms-md-auto">
-            <a class="me-3 py-2 text-dark text-decoration-none" href="{% url 'stock_book:index' %}"
+            <form action="{% url 'stock_book:logout' %}" method="post" novalidate>
+            <a
+              class="me-3 py-2 text-dark text-decoration-none"
+              href="{% url 'stock_book:index' %}"
               >Home</a
             >
-            <a class="me-3 py-2 text-dark text-decoration-none" href="#"
-              >Book</a
+            
+            {% if request.session.cart_qty %}
+            <a
+              href="{% url 'stock_book:cart_list' %}"
+              class="btn btn-outline-danger mx-2"
             >
-
-      
-            <a href="{% url 'stock_book:cart_list' %}" class="btn btn-outline-danger" >
               <i class="fas fa-shopping-cart"></i>
               <span>{{ request.session.cart_qty }}</span>
             </a>
+            {% endif %} 
             
-
+            {% if not user.is_authenticated %}
+            <a class="btn btn-outline-dark mx-2" href="{% url 'stock_book:signup' %}"
+              >Sign up</a
+            >
+            <a class="btn btn-outline-dark mx-2" href="{% url 'stock_book:login' %}"
+              >Login</a
+            >
+            {% endif %} 
+            {% if user.is_authenticated %}
             
+              {% csrf_token %}
+              <span>User: {{request.user.username}}</span>
+              <button type="submit" class="btn btn-danger">Logout</button>
+            </form>
+            {% endif %}
           </nav>
         </div>
       </header>
 
       <!-- This Content Children Components -->
-      <div class="container-fluid">{% block content %} {% endblock %}</div>
+      <div class="container-fluid">
+        {% if messages %} 
+        {% for msg in messages %} 
+        {% if msg.tags == 'success' %}
+        <div
+          class="alert alert-success alert-dismissible fade show"
+          role="alert"
+        >
+          <strong>Success</strong>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="alert"
+            aria-label="Close"
+          ></button>
+        </div>
+        {% endif %} 
+        
+        {% if msg.tags == 'error' %}
+        <div
+          class="alert alert-danger alert-dismissible fade show"
+          role="alert"
+        >
+          <strong>Error</strong>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="alert"
+            aria-label="Close"
+          ></button>
+        </div>
+
+        {% endif %} 
+        
+        {% endfor %} 
+        {% endif %} 
+        {% block content %} 
+        {% endblock %}
+      </div>
     </div>
 
     <!-- Optional JavaScript; choose one of the two! -->
