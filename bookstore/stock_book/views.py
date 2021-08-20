@@ -168,6 +168,7 @@ def login_view(request):
             login(request, user)
             # return HttpResponseRedirect(reverse('book:index'))
             # หรือใช้ 
+            print('Login')
             return redirect('stock_book:index')
     else:
         # สร้าง form login
@@ -179,6 +180,7 @@ def login_view(request):
 def logout_view(request):
         if request.method == 'POST':
             logout(request)
+            print('Logout')
             return redirect('stock_book:index')
 
 def signup_view(request):
@@ -193,6 +195,11 @@ def signup_view(request):
     return render(request , 'account/signup.html', {
         'form': form,
     })
+
+def create_salesorder(request):
+    cart_items = request.session['cart_items'] or []
+    print(cart_items)
+    return redirect('stock_book:cart_list')
 
 
 

@@ -14,6 +14,7 @@
 
     <form method="post" action={% url 'stock_book:edit_qty' %}>
       {% csrf_token %}
+      <div class="table-responsive">   
       <table class="table" table-bordered>
         <thead style="text-align: center">
           <tr>
@@ -60,8 +61,10 @@
           </tr>
           {% endfor %}
         </tbody>
-      </table>
-    
+      </table>    
+      </div>
+
+
     <div class="row">
       <div class="col-12 col-lg-6">     
           <div class="w-50">
@@ -69,6 +72,13 @@
              <i class="fas fa-save"></i>
              Save
            </button>
+          </div>
+
+          <div class="w-50 my-2">
+            <a href="{% url 'stock_book:create_salesorder' %}" class="btn btn-info w-100 ">
+              <i class="fas fa-money-bill-wave-alt"></i>
+              Sell
+            </a>
           </div>
             
            <div class="w-50 my-2">

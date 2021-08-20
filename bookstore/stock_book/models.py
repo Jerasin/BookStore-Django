@@ -84,3 +84,13 @@ class BookComments(models.Model):
 
     def __str__(self):
         return self.comment
+
+class SalesOrder(models.Model):
+    saleorder_code = models.IntegerField(blank=True , null=True , unique=True)
+    product_name = models.CharField(max_length=100)
+    product_price = models.FloatField(blank=True , null=True )
+    product_qty = models.IntegerField(blank=True , null=True)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+    created_by = models.CharField(max_length=255)
+    saleorder_status = models.CharField(max_length=100 , blank=True , null=True )
