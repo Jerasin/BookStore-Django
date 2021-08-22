@@ -88,7 +88,9 @@
       {% endif %}
   
       {% for item in page_obj.paginator.page_range %}
+      {% if page_obj %}
       <li class="page-item {% if page_obj.number == item %}active{% endif %}"><a class="page-link" href="?page={{item}}">{{item}}</a></li>
+      {% endif %}
       {% endfor %}
   
       {% if page_obj.has_next %}

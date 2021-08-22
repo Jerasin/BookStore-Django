@@ -8,7 +8,7 @@
 
 {# Start Content to Parent Component} 
 {% block content %}
-<div class="row">
+<div class="row ">
   <div class="col-lg-6 offset-lg-3">
     <h1>Cart List</h1>
 
@@ -42,10 +42,12 @@
             </td>
             <td style="text-align: center">
               <input
+                class="qty_input"
                 type="number"
                 style="width: 60px"
                 value="{{item.qty}}"
                 name="qty"
+                onchange='hide_Btn()'
               />
             </td>
             <td style="text-align: center">{{item.price}}</td>
@@ -61,21 +63,44 @@
           </tr>
           {% endfor %}
         </tbody>
-      </table>    
+      </table>  
+      
+      <ul class="pagination mt-3">
+
+        <!-- ถ้าเขียนแบบ FBV ใช้ books ถ้าใช้ CBV ให้ใช้ page_obj -->
+        {% if page_obj.has_previous %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{page_obj.previous_page_number}}" tabindex="-1" aria-disabled="true">Previous</a>
+        </li>
+        {% endif %}
+    
+        {% for item in page_obj.paginator.page_range %}
+        {% if page_obj %}
+        <li class="page-item {% if page_obj.number == item %}active{% endif %}"><a class="page-link" href="?page={{item}}">{{item}}</a></li>
+        {% endif %}
+        {% endfor %}
+    
+        {% if page_obj.has_next %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{page_obj.next_page_number}}">Next</a>
+        </li>
+        {% endif %}
+      </ul>
+      
       </div>
 
 
     <div class="row">
       <div class="col-12 col-lg-6">     
           <div class="w-50">
-           <button type='submit'   class="btn btn-success me-1 w-100 ">
+           <button type='submit' id='btn_save' onclick="show_Btn()"   class="btn btn-success me-1 w-100 ">
              <i class="fas fa-save"></i>
              Save
            </button>
           </div>
 
           <div class="w-50 my-2">
-            <a href="{% url 'stock_book:create_salesorder' %}" class="btn btn-info w-100 ">
+            <a href="{% url 'stock_book:create_salesorder' user_id=user.id %}"  id='btn_sell' class="btn btn-info w-100 ">
               <i class="fas fa-money-bill-wave-alt"></i>
               Sell
             </a>
@@ -106,7 +131,21 @@
   </div>
 </div>
 
-<script></script>
+<script>
+  btn_save = document.getElementById('btn_save').style.display = "none"; 
+  qtyInput = document.getElementsByClassName('qty_input');
+
+  const show_Btn = () =>{
+    btn_sell = document.getElementById('btn_sell').style.display = "block";
+    btn_save = document.getElementById('btn_save').style.display = "none"; 
+  }
+
+  const hide_Btn = () =>{
+    btn_sell = document.getElementById('btn_sell').style.display = "none";
+    btn_save = document.getElementById('btn_save').style.display = "block"; 
+  }
+
+</script>
 
 {% endblock %} 
 {# End Content to Parent Component}

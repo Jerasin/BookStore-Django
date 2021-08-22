@@ -69,6 +69,14 @@
             </li>
 
             <li class="nav-item">
+              {% if user.is_authenticated %}
+              {% if user.is_superuser %}
+              <a class="nav-link btn btn-outline-white mx-2 my-2" aria-current="page" href="{% url 'stock_book:show_history' %}">History All</a>
+              {% endif %}
+              {% endif %}
+            </li>
+
+            <li class="nav-item">
               {% if not user.is_authenticated %}
               <a class="nav-link btn btn-outline-dark mx-2 my-2" href="{% url 'stock_book:signup' %}"
                 >Sign up</a

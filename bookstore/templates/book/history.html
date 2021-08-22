@@ -1,0 +1,72 @@
+{% extends "layouts/base.html" %} 
+{% load humanize %} 
+{# load humanize ใช้กับฟังก์ชั่น intcomma} 
+
+{# Send Title to Parent Component} {% block title %} History {% endblock %} 
+
+{# Start Content to Parent Component} 
+{% block content %}
+<div class="row mt-3">
+  <div class="col-lg-8 offset-lg-2">
+    <div class="table-responsive">
+      <table class="table table-bordered">
+        <thead style="text-align: center">
+          <tr>
+            <th>Saleorder Code</th>
+            <th>Grand Total</th>
+            <th>Created</th>
+            <th>Created By</th>
+            <th>Status</th>
+            <th>Detail</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for item in history %}
+          <tr>
+            <td class="text-center">{{item.saleorder_code}}</td>
+
+            <td class="text-center">{{item.grand_total}}</td>
+
+            <td class="text-center">{{item.created|date}}</td>
+
+            <td class="text-center">{{item.created_by}}</td>
+
+            <td class="text-center">{{item.saleorder_status}}</td>
+
+            <td class="text-center">
+              <a href="{% url 'stock_book:show_detail' salesorder=item.saleorder_code %}" class='btn btn-warning'>detail</a>
+            </td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+
+      <ul class="pagination mt-3">
+
+        <!-- ถ้าเขียนแบบ FBV ใช้ books ถ้าใช้ CBV ให้ใช้ page_obj -->
+        {% if page_obj.has_previous %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{page_obj.previous_page_number}}" tabindex="-1" aria-disabled="true">Previous</a>
+        </li>
+        {% endif %}
+    
+        {% for item in page_obj.paginator.page_range %}
+        {% if page_obj %}
+        <li class="page-item {% if page_obj.number == item %}active{% endif %}"><a class="page-link" href="?page={{item}}">{{item}}</a></li>
+        {% endif %}
+        {% endfor %}
+    
+        {% if page_obj.has_next %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{page_obj.next_page_number}}">Next</a>
+        </li>
+        {% endif %}
+      </ul>
+      
+    </div>
+  </div>
+</div>
+
+{% endblock %} 
+{# End Content to Parent Component}

@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.html import format_html
+from django.contrib.auth.models import User
 # Create your models here.
 
 BOOK_LEVEL_CHOICE = (
@@ -68,8 +69,7 @@ class Book(models.Model):
 
     def __str__(self):
         return self.name
-
-
+    
 class BookComments(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     comment = models.CharField(max_length=100)
@@ -85,12 +85,21 @@ class BookComments(models.Model):
     def __str__(self):
         return self.comment
 
-class SalesOrder(models.Model):
-    saleorder_code = models.IntegerField(blank=True , null=True , unique=True)
-    product_name = models.CharField(max_length=100)
-    product_price = models.FloatField(blank=True , null=True )
-    product_qty = models.IntegerField(blank=True , null=True)
+class SalesOrderList(models.Model):
+    saleorder_code = models.IntegerField(unique=True)
+    grand_total = models.FloatField()
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
-    created_by = models.CharField(max_length=255)
-    saleorder_status = models.CharField(max_length=100 , blank=True , null=True )
+    created_by = models.ForeignKey(User , on_delete=models.CASCADE)
+    saleorder_status = models.CharField(max_length=100 , default='wait')
+
+class SalesOrder(models.Model):
+    saleorder_code = models.ForeignKey(SalesOrderList , to_field='saleorder_code', on_delete=models.CASCADE , verbose_name='saleorder_code',)
+    product_code = models.CharField(max_length=10)
+    product_name = models.CharField(max_length=100)
+    product_price = models.FloatField()
+    product_qty = models.IntegerField()
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+    created_by = models.ForeignKey(User , on_delete=models.CASCADE)
+

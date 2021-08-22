@@ -143,8 +143,6 @@ MEDIA_ROOT = Path(BASE_DIR , 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
-
 #Handle session is not Json Serializable
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 # Timeout Login Administration
