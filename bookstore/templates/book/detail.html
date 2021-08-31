@@ -6,9 +6,8 @@
 {% block title %} Book Detail{% endblock %} 
 
 {% block content %}
-
 <div class="container">
-    <div class="row">
+    <div class="row mt-5">
         <div class="col-lg-3">
             {% if book.image %}
             <img src="{{ book.image.url }}" class=""alt="">
@@ -34,23 +33,47 @@
             <br>
             <span>Price : {{ book.price|floatformat:2|intcomma}}</span>
             <br>
-            <a href="{% url 'stock_book:cart_add' slug=book.slug %}" class="btn btn-success" class="btn btn-success">Add Cart</a>
-           
+            <a href="{% url 'stock_book:cart_add' slug=book.slug %}" class="btn btn-success">Add Cart</a>
+      
+            <a href="{% url 'stock_book:comment_add' slug=book.slug  %}" class="btn btn-info">Add Comment</a>
+            
         </div>
     
     </div>
     
-    <h4 class="mt-3">Comment ({{book.get_comment_count}})</h4>
+    <h4 class="mt-3 mb-3">Comment ({{book.get_comment_count}})</h4>
     
-    {% for item in book.bookcomments_set.all %}
-    <div class="card mb-4">
+    {% for item in object_list %}
+    <div class="card mb-4 border border-dark p-3">
         <div class="body-card">
-            <h5>{{item.comment}}</h5>
-            <div>Name: {{item.name}}</div>
+            <h5>{{item.comment}}</h5>       
+            <div>Name: {{item.users}}</div>           
             <div>Rating: {{item.rating}}</div>
         </div>
     </div>
     {% endfor %}
+
+    <ul class="pagination mt-3">
+
+        <!-- ถ้าเขียนแบบ FBV ใช้ books ถ้าใช้ CBV ให้ใช้ page_obj -->
+        {% if page_obj.has_previous %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{page_obj.previous_page_number}}" tabindex="-1" aria-disabled="true">Previous</a>
+        </li>
+        {% endif %}
+    
+        {% for item in page_obj.paginator.page_range %}
+        {% if page_obj %}
+        <li class="page-item {% if page_obj.number == item %}active{% endif %}"><a class="page-link" href="?page={{item}}">{{item}}</a></li>
+        {% endif %}
+        {% endfor %}
+    
+        {% if page_obj.has_next %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{page_obj.next_page_number}}">Next</a>
+        </li>
+        {% endif %}
+      </ul>
     </div>
 </div>
 

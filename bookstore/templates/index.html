@@ -8,18 +8,55 @@
 
 {# Start Content to Parent Component}
 {% block content %}
+<style>
+  img {
+    float: center;
+    width:  200px;
+    height: 200px;
+    object-fit: cover;
+}
+
+.wlc{
+  /* จำกัดความยาวบรรทัด */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+}
+
+@media only screen and (max-width: 600px) {
+  img {
+    float: left;
+    width:  100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+</style> 
 <h1>Book List</h1>
 
 <div class="row">
   <div class="col-12 col-lg-2">
+
     {% if user.is_superuser %}
-    <a class="btn btn-danger w-100 mb-3" href="{% url 'stock_book:book_add' %}">Add Book</a>
+    <a class="btn btn-danger w-100 mb-2" href="{% url 'stock_book:book_list' %}">Book</a>
     {% endif %}
+
+    {% if user.is_superuser %}
+    <a class="btn btn-info w-100 mb-2" href="{% url 'stock_book:author_list' %}">Author</a>
+    {% endif %}
+
+    {% if user.is_superuser %}
+    <a class="btn btn-secondary w-100 mb-2" href="{% url 'stock_book:category_list' %}"> Cartegory</a>
+    {% endif %}
+
+
       <div class="list-group">
         <a
         href="{% url 'stock_book:index' %}"
         class="
           list-group-item list-group-item-action
+          text-center
           {% if not categoried_id %}active{% endif %}"
         aria-current="true"
         >All</a
@@ -38,25 +75,25 @@
 
   <div class="clo-auto col-lg-10">
     
-    <div class="row mt-3 mt-lg-0 ">
+    <div class="row mt-3 mt-lg-0">
       
-     {% for book in books%}
-     <div class="col-lg-3 mb-3">
+     {% for book in books %}
+     <div class="col-12 col-lg-3 mb-3">
        <div class="card">
          {% if book.image %}
          <a href="{% url 'stock_book:detail' slug=book.slug %}">
-           <img src="{{book.image.url}}" alt="" class="card-img-top" />
+           <img src="{{book.image.url}}" alt="" class="card-img-top p-3" />
          </a>
          {% endif %}
 
          {% if not book.image %}
          <a href="{% url 'stock_book:detail' slug=book.slug %}">
-           <center><img  src='../media/public/no_image_1.jpg' alt="" class="card-img-top" style='max-height: 150px; max-width: 150px;' /></center>
+           <center><img  src='../media/public/no_image_2.jpg' alt="" class="card-img-top p-3"/></center>
          </a>
          {% endif %}
 
          <div class="card-body mb-4">
-           <p><a href="{% url 'stock_book:detail' slug=book.slug %}"><b>{{ book.name}}</b></a></p>
+           <p class='fs-5 wlc'><b>{{book.name}}</b></p>
 
            {% for author in book.author.all %}
            <div>Author : {{author.name}} </div>

@@ -14,8 +14,9 @@
 
     <form method="post" action={% url 'stock_book:edit_qty' %}>
       {% csrf_token %}
+
       <div class="table-responsive">   
-      <table class="table" table-bordered>
+      <table class="table table-bordered border-dark" table-bordered>
         <thead style="text-align: center">
           <tr>
             <th>Code</th>
@@ -63,8 +64,9 @@
           </tr>
           {% endfor %}
         </tbody>
-      </table>  
-      
+      </table>      
+      </div>
+
       <ul class="pagination mt-3">
 
         <!-- ถ้าเขียนแบบ FBV ใช้ books ถ้าใช้ CBV ให้ใช้ page_obj -->
@@ -86,9 +88,6 @@
         </li>
         {% endif %}
       </ul>
-      
-      </div>
-
 
     <div class="row">
       <div class="col-12 col-lg-6">     
@@ -100,11 +99,18 @@
           </div>
 
           <div class="w-50 my-2">
-            <a href="{% url 'stock_book:create_salesorder' user_id=user.id %}"  id='btn_sell' class="btn btn-info w-100 ">
+            <a href="{% url 'stock_book:edit_address' username=user %}"  id='btn_sell' class="btn btn-info w-100 ">
               <i class="fas fa-money-bill-wave-alt"></i>
-              Sell
+              Next
             </a>
           </div>
+
+          <!-- <div class="w-50 my-2">
+            <a href="{% url 'stock_book:create_salesorder' user_id=user.id %}"  id='btn_sell' class="btn btn-info w-100 ">
+              <i class="fas fa-money-bill-wave-alt"></i>
+              Save
+            </a>
+          </div> -->
             
            <div class="w-50 my-2">
              <a href="{% url 'stock_book:index' %}" class="btn btn-warning w-100 ">
@@ -112,7 +118,7 @@
                Back
              </a>
            </div>
-        
+
            <div class="w-50">
              <a href="{% url 'stock_book:cart_delete_all' %}" class="btn btn-danger w-100">
                <i class="fas fa-trash"></i>
@@ -132,6 +138,10 @@
 </div>
 
 <script>
+  function Submit_edit_address() {
+    document.forms["edit_address"].submit();
+  }
+
   btn_save = document.getElementById('btn_save').style.display = "none"; 
   qtyInput = document.getElementsByClassName('qty_input');
 

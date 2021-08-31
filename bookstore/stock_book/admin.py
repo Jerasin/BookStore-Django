@@ -1,6 +1,8 @@
 from django.contrib import admin
-from .models import Category, Author, Book, BookComments
+from .models import Category, Author, Book, BookComments , Address , CustomUser
 from django.contrib.auth.models import User
+# Custom User Model
+from django.conf import settings
 # Register your models here.
 
 
@@ -10,6 +12,8 @@ class BookCommentsStackedInline(admin.StackedInline):
 
 # กำหนดบรรทัดเริ่มต้นแบบกำหนดเอง กำหนดผ่าน Extra
 
+class AddressStackedInline(admin.StackedInline):
+    model = Address
 
 class BookTabularInline(admin.TabularInline):
     model = BookComments
@@ -31,11 +35,15 @@ class BookAdmin(admin.ModelAdmin):
     inlines = [BookTabularInline]
 
 class UserAdmin(admin.ModelAdmin):
-     list_display = ['email' , 'username', 'last_login', 'is_staff' , 'is_active']
+     model = CustomUser
+     list_display = ['email' , 'username', 'last_login', 'is_superuser' , 'is_staff' , 'is_active' , 'address']
+     
+
 
 
 admin.site.register(Category)
 admin.site.register(Author)
-admin.site.unregister(User)
-admin.site.register(User, UserAdmin)
+admin.site.register(Address)
+# admin.site.unregister(CustomUser)
+admin.site.register(CustomUser, UserAdmin)
 admin.site.register(Book,BookAdmin)

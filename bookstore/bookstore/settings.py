@@ -23,9 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-gx%xf5_w)ldyq$_%a@-@xj9=7!+ep0@f$+^sa*bc)2x%6&=9=*'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['https://bookstore-django-app.herokuapp.com/']
 
 
 # Application definition
@@ -146,4 +146,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 #Handle session is not Json Serializable
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 # Timeout Login Administration
-SESSION_COOKIE_AGE = 360 
+SESSION_COOKIE_AGE = 3600 
+
+# Custom User Model
+AUTH_USER_MODEL="stock_book.CustomUser"

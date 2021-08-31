@@ -5,15 +5,32 @@
 {% block title %} Login page{% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-lg-6 offset-lg-3">
-        <h1>Log in</h1>
-        <form method="post" novalidate>
+<section class="vh-80">
+    <div class="container-fluid h-custom mt-0 mt-lg-5">
+      <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-md-9 col-lg-6 col-xl-5 mt-3 mt-lg-0">
+          <img src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTJ8fGJvb2t8ZW58MHx8MHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" class="img-fluid"
+            alt="Sample image">
+        </div>
+        <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
+          <form method="post" novalidate class="loginform">
             {% csrf_token %}
+            <div class="divider d-flex align-items-center my-4">
+                <h1>Login</h1>
+            </div>
+            
             {{ form|crispy }}
-            <button type="submit" class="btn btn-primary">Login</button>
-        </form>
+ 
+  
+            <div class="text-center text-lg-start mt-4 pt-2">
+              <button type="submit" class="btn btn-primary btn-lg"
+                style="padding-left: 2.5rem; padding-right: 2.5rem;">Login</button>
+              <p class="small fw-bold mt-2 pt-1 mb-0">Don't have an account? <a href="{% url 'stock_book:signup' %}"
+                  class="link-danger">Signup</a></p>
+            </div>
+  
+          </form>
+        </div>
+      </div>
     </div>
-</div>
-
 {% endblock %}

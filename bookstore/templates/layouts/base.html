@@ -70,8 +70,14 @@
 
             <li class="nav-item">
               {% if user.is_authenticated %}
+              <a class="nav-link btn btn-outline-white mx-2 my-2" aria-current="page" href="{% url 'stock_book:show_history' %}">History</a>
+              {% endif %}
+            </li>
+
+            <li class="nav-item">
+              {% if user.is_authenticated %}
               {% if user.is_superuser %}
-              <a class="nav-link btn btn-outline-white mx-2 my-2" aria-current="page" href="{% url 'stock_book:show_history' %}">History All</a>
+              <a class="nav-link btn btn-outline-white mx-2 my-2" aria-current="page" href="{% url 'stock_book:dashboard_page' %}">Dashboard</a>
               {% endif %}
               {% endif %}
             </li>
@@ -121,13 +127,16 @@
     <!-- This Content Children Components -->
       <div class="container-fluid">
         {% if messages %} 
-        {% for msg in messages %} 
-        {% if msg.tags == 'success' %}
+        {% for message in messages %}    
         <div
-          class="alert alert-success alert-dismissible fade show"
+          {% if message.tags == 'error' %} class="alert alert-success alert-dismissible fade show bg-danger"{% endif %}
+          {% if message.tags == 'success' %} class="alert alert-success alert-dismissible fade show bg-sucess"{% endif %}
           role="alert"
         >
-          <strong>Success</strong>
+          <strong 
+          {% if message.tags == 'error' %} class="text-white" {% endif %}
+          {% if message.tags == 'success' %} class="text-dark" {% endif %}
+          >{{ message }}</strong>
           <button
             type="button"
             class="btn-close"
@@ -135,28 +144,12 @@
             aria-label="Close"
           ></button>
         </div>
-        {% endif %} 
-        {% if msg.tags == 'error' %}
-        <div
-          class="alert alert-danger alert-dismissible fade show"
-          role="alert"
-        >
-          <strong>Error</strong>
-          <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="alert"
-            aria-label="Close"
-          ></button>
-        </div>
-
-        {% endif %} 
         {% endfor %} 
         {% endif %} 
         {% block content %} 
         {% endblock %}
       </div>
-    </div>
+  
 
     <!-- Optional JavaScript; choose one of the two! -->
 

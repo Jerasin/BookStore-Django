@@ -1,0 +1,202 @@
+{% extends "layouts/base.html" %} 
+
+{% load humanize %}
+{# load humanize ใช้กับฟังก์ชั่น intcomma}
+
+{% block title %} Book Detail{% endblock %} 
+
+{% block content %}
+<style>
+    .small-box{
+        border-radius: .25rem;
+        box-shadow: 0 0 1px rgb(0 0 0 / 13%), 0 1px 3px rgb(0 0 0 / 20%);
+        display: block;
+        margin-bottom: 20px;
+        position: relative;
+        min-height: 100%;
+    }
+
+    .small-box>.inner{
+        padding: 10px;
+    }
+
+    .icon{
+        position: absolute;
+        right: 15px;
+        top: 10%;
+    }
+
+    .users_icon{
+        cursor: pointer;
+    }
+</style>
+<div class="my-2">
+    <h1>DashBoard</h1>
+</div>
+
+<div class="container-fluid">
+    
+
+    <div class="row">
+
+        <div class="col-lg-3 col-12 my-2">
+            <div class="small-box bg-info">
+                <div class="inner">
+                    <h3 class="text-white">{{count_customers}}</h3>
+                    <p class="text-white">Customers</p>
+                </div>
+
+                <div class="icon">
+                    <a href="{% url 'stock_book:users_list' %}">
+                        <i class="fas fa-users users_icon text-dark" style="font-size: 100px;"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-12 my-2">
+            <div class="small-box bg-success">
+                <div class="inner">
+                    <h3 class="text-white">{{count_orders_approve}}</h3>
+                    <p class="text-white">Order Success</p>
+                </div>
+
+                <div class="icon">
+                    <i class="fas fa-clipboard-check" style="font-size: 100px;"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-12 my-2">
+            <div class="small-box bg-warning">
+                <div class="inner">
+                    <h3 class="text-dark">{{count_orders_wait}}</h3>
+                    <p class="text-dark">Order Wait</p>
+                </div>
+
+                <div class="icon">
+                    <i class="far fa-file" style="font-size: 100px;"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-12 my-2">
+            <div class="small-box bg-danger">
+                <div class="inner">
+                    <h3 class="text-white">{{count_orders_reject}}</h3>
+                    <p class="text-white">Order Rejected</p>
+                </div>
+
+                <div class="icon">
+                    <i class="far fa-window-close" style="font-size: 100px;"></i>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row border border-dark mt-2">
+
+        <div class="col-lg-12">
+        <h1 class="my-3">Search:</h1>
+        <form action={% url 'stock_book:search_detail' %} method="post">
+        {% csrf_token %}
+           <div class="row">
+               <div class="col-12 col-lg-3">
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">From</label>
+                        <input type="date" class="form-control" value="{{date_now_from}}" id="date_from" name="date_from" >
+                    </div>
+               </div>
+
+               <div class="col-12 col-lg-3">
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">To</label>
+                        <input type="date" class="form-control" id="date_to" name="date_to" value="{{date_now_to}}">
+                    </div>
+               </div>
+
+               <div class="col-12 col-lg-3">
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">Customer Name</label>
+                        <input type="text" class="form-control" name="customer_name">
+                    </div>
+               </div>
+
+               <div class="col-12 col-lg-3">
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">Saleorder Code</label>
+                        <input type="text" class="form-control" name="salesorder_code">
+                    </div>  
+               </div>
+
+               <div class="col-12">
+                <div class="mb-3 float-end">
+                    
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-search"></i>
+                        Search
+                    </button>
+                </div>  
+           </div>
+        </div>
+        </form>
+       
+        <div class="col-lg-12">
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                  <thead style="text-align: center">
+                    <tr>
+                      <th>Saleorder Code</th>
+                      <th>Grand Total</th>
+                      <th>Created</th>
+                      <th>Created By</th>
+                      <th>Status</th>
+                      <th>Detail</th>
+                    </tr>
+                  </thead>
+          
+                  <tbody>
+                    {% for item in salesorder_list %}
+                    <tr>
+                      <td class="text-center">{{item.saleorder_code}}</td>
+          
+                      <td class="text-center">{{item.grand_total}}</td>
+          
+                      <td class="text-center">{{item.created|date}}</td>
+          
+                      <td class="text-center">{{item.created_by}}</td>
+          
+                      <td class="text-center">{{item.saleorder_status}}</td>
+          
+                      <td class="text-center">
+                        <a href="{% url 'stock_book:salesorder_detail' salesorder=item.saleorder_code %}" class='btn btn-warning'>detail</a>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+        </div>
+
+        <div class="col-lg-12">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="float-end">
+                        <h4><b>Total Price:</b> {{grand_total.grand_total__sum}}</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+</div>
+<script>
+        function test(){
+            alert("Test")
+        }
+        
+</script>
+{% endblock %}

@@ -1,0 +1,74 @@
+{% extends "layouts/base.html" %} 
+
+{% load humanize %} 
+{# load humanize ใช้กับฟังก์ชั่น intcomma} 
+
+{# Send Title to Parent Component} 
+{% block title %} Shopping Cart {% endblock %} 
+
+{# Start Content to Parent Component} 
+{% block content %}
+
+<div class="row ">  
+    <div class="col-lg-6 offset-lg-3 mt-5">
+
+          
+      <div class="table-responsive mb-3">   
+        <table class="table table-bordered border-dark" table-bordered>
+          <thead style="text-align: center">
+            <tr>
+              <th>SalesOrder Code</th>
+              <th>Total Qty</th>
+              <th>Total Price</th>
+            </tr>
+          </thead>
+          <tr style="text-align: center">
+              <td>
+                  {{saleorder_code_running}}
+              </td>
+
+              <td>
+                {{total_qty}}
+            </td>
+
+            <td>
+                {{total_price}}
+            </td>
+          </tr>
+  
+          <tbody>
+           
+          </tbody>
+        </table>          
+        </div>
+     
+        <h2>Address</h2>
+        <div class="row">
+            
+            <div class="col-12">
+                <form action={% url 'stock_book:updated_address' %} method="post">
+                {% csrf_token %} 
+                <textarea class="form-control my-3" name="address" aria-label="With textarea">{{get_address}}</textarea>
+            </div>
+
+            <div class="col-12 my-3">
+                <div class="w-25 float-end">
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-warning w-100">Change Address</button>
+                    </div>
+                </form>
+                </div>
+            </div>
+
+
+            <div class="col-12">
+                <div class="w-25 float-end">
+                    <a href="{% url 'stock_book:create_salesorder' user_id=user.id %}" class="btn btn-info w-100">Comfirm</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %} 
+{# End Content to Parent Component}

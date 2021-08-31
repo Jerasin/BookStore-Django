@@ -4,3 +4,13 @@ django-crispy-forms
 python-slugify
 django-taggit
 crispy-bootstrap5
+gunicorn
+dj-database-url
+psycopg2
+
+////////////////////////////////////////////////////////////////
+Config Heroku Deploy
+Step1 : install lib dj-database-url psycopg2
+Step2 : use command pip freeze>requirements.txt in direct webapp path
+Step3 : create Profile and put "web: gunicorn myproject.wsgi"
+Step4 : use git init and heroku login in command 

@@ -1,0 +1,106 @@
+{% extends "layouts/base.html" %} 
+{% load humanize %} 
+{# load humanize ใช้กับฟังก์ชั่น intcomma} 
+
+{# Send Title to Parent Component} {% block title %} Detial SalesOrder {% endblock %} 
+
+{# Start Content to Parent Component} 
+{% block content %}
+<div class="row mt-3">
+  <div class="col-lg-8 offset-lg-2">
+
+    <div>
+        <h3>Saleorder Code : {{saleorder_code}}</h3>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-bordered">
+        <thead style="text-align: center">
+          <tr>
+
+            <th>Product Code</th>
+            <th>Product Name</th>
+            <th>Product Price</th>
+            <th>Product Qty</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for item in detail %}
+          <tr>
+
+            <td class="text-center">{{item.product_code}}</td>
+
+            <td class="text-center">{{item.product_name}}</td>
+
+            <td class="text-center">{{item.product_price}}</td>
+
+            <td class="text-center">{{item.product_qty}}</td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <ul class="pagination mt-3">
+
+      <!-- ถ้าเขียนแบบ FBV ใช้ books ถ้าใช้ CBV ให้ใช้ page_obj -->
+      {% if page_obj.has_previous %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{page_obj.previous_page_number}}" tabindex="-1" aria-disabled="true">Previous</a>
+      </li>
+      {% endif %}
+  
+      {% for item in page_obj.paginator.page_range %}
+      {% if page_obj %}
+      <li class="page-item {% if page_obj.number == item %}active{% endif %}"><a class="page-link" href="?page={{item}}">{{item}}</a></li>
+      {% endif %}
+      {% endfor %}
+  
+      {% if page_obj.has_next %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{page_obj.next_page_number}}">Next</a>
+      </li>
+      {% endif %}
+    </ul>
+
+    <div class="row">
+        <div class="col-12 col-lg-6">
+            {% if user.is_superuser %}
+            {% if not saleorder_status %}   
+            <div class="w-50">
+             <a href="{% url 'stock_book:set_approve' salesorder=saleorder_code %}"  class="btn btn-success me-1 w-100 ">
+               <i class="fas fa-save me-1"></i>
+               approve
+             </a>
+            </div>
+            {% endif %}
+            {% endif %}
+
+            {% if user.is_superuser %}
+            {% if not saleorder_status %} 
+            <div class="w-50 my-2">
+              <a href="{% url 'stock_book:set_reject' salesorder=saleorder_code %}"  class="btn btn-danger me-1 w-100 ">
+                <i class="fas fa-window-close me-1"></i>
+                reject
+              </a>
+             </div>
+             {% endif %}
+             {% endif %}
+
+             {% if user.is_superuser %}
+             <div class="w-50 my-2">
+              <a href="{% url 'stock_book:dashboard_page' %}" class="btn btn-info w-100 ">
+                <i class="fas fa-backspace"></i>
+                Back 
+              </a>
+            </div>
+             {% endif %}            
+        </div>
+      </div>
+
+  </div>
+</div>
+
+{% endblock %} 
+{# End Content to Parent Component}
