@@ -9,12 +9,11 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
-
+import dj_database_url
 from pathlib import Path
-
+import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
@@ -25,7 +24,7 @@ SECRET_KEY = 'django-insecure-gx%xf5_w)ldyq$_%a@-@xj9=7!+ep0@f$+^sa*bc)2x%6&=9=*
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['https://bookstore-django-app.herokuapp.com/']
+ALLOWED_HOSTS = ['intense-bayou-55861.herokuapp.com']
 
 
 # Application definition
@@ -49,6 +48,7 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -82,14 +82,15 @@ WSGI_APPLICATION = 'bookstore.wsgi.application'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'bookstore',
-        'USER': 'root',
-        'PASSWORD': 'Jc@123456',
-        'HOST': 'localhost',
-        'PORT': '3306',
-    }
+    'default': dj_database_url.config(conn_max_age=600,ssl_require=True)
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.mysql',
+    #     'NAME': 'bookstore',
+    #     'USER': 'root',
+    #     'PASSWORD': 'Jc@123456',
+    #     'HOST': 'localhost',
+    #     'PORT': '3306',
+    # }
 }
 
 # Password validation
@@ -130,13 +131,19 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = Path(BASE_DIR, 'static')
-STATICFILES_DIRS = [
-    Path(BASE_DIR, '/static')
-]
+# STATICFILES_DIRS = [
+#     os.path.join(BASE_DIR, '/static')
+# ]
 
+# print('BASE_DIR',Path(BASE_DIR, 'static'))
+
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = Path(BASE_DIR , 'media')
+
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
@@ -150,3 +157,21 @@ SESSION_COOKIE_AGE = 3600
 
 # Custom User Model
 AUTH_USER_MODEL="stock_book.CustomUser"
+
+# Logging
+
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'handlers': {
+#         'console': {
+#             'class': 'logging.StreamHandler',
+#         },
+#     },
+#     'loggers': {
+#         'django': {
+#             'handlers': ['console'],
+#              'level': os.getenv('DJANGO_LOG_LEVEL', 'DEBUG'),
+#         },
+#     },
+# }

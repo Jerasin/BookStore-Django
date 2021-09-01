@@ -7,10 +7,18 @@ crispy-bootstrap5
 gunicorn
 dj-database-url
 psycopg2
+whitenoise
 
 ////////////////////////////////////////////////////////////////
 Config Heroku Deploy
 Step1 : install lib dj-database-url psycopg2
 Step2 : use command pip freeze>requirements.txt in direct webapp path
-Step3 : create Profile and put "web: gunicorn myproject.wsgi"
+Step3 : create Profile and put "web: gunicorn bookstore.wsgi --log-file -" and  "release: python manage.py migrate"
 Step4 : use git init and heroku login in command 
+Step5 : create project use command "heroku create 'project-name' "
+Step6 : create database "heroku addons:create heroku-postgresql:hobby-dev"
+Step7 : check config "heroku config"
+Step8 : hide SECRET_KEY  heroku config:set SECRET_KEY = 'django-insecure-gx%xf5_w)ldyq$_%a@-@xj9=7!+ep0@f$+^sa*bc)2x%6&=9=*' 
+Step9 : setting.py "DEBUG = False" and "ALLOWED_HOSTS = ['you hostname']"
+Step10 : create static folder "python manage.py collectstatic --noinput"
+Step11 : git add . and git commit and git push heroku master
