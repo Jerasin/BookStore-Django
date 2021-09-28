@@ -1,0 +1,57 @@
+///////////////////////////// Nginx Config ///////////////////////////////////
+
+server {
+        listen 80;
+        server_name 188.166.208.101;
+        #access_log /var/log/nginx/access.log;
+        #error_log /var/log/nginx/error.log;    
+        location = /favicon.ico { access_log off; log_not_found off; }
+
+        location /static/ {
+                root /home/bookstore;
+        }
+
+                location / {
+                root /user/share/nginx/html;
+                internal;
+        }
+
+        location  /bookstore/  {
+                include proxy_params;
+                proxy_pass http://unix:/run/gunicorn.sock;
+                proxy_set_header SCRIPT_NAME /bookstore;
+        }
+
+                location /media/ {
+
+               root /home/bookstore;
+        }
+
+
+}
+
+
+///////////////////////////// gunicorn.socket ///////////////////////////////////
+
+[Unit]
+Description=gunicorn socket
+[Socket]
+ListenStream=/run/gunicorn.sock
+[Install]
+WantedBy=sockets.target
+
+///////////////////////////// gunicorn.service ///////////////////////////////////
+[Unit]
+Description=gunicorn daemon
+Requires=gunicorn.socket
+After=network.target
+[Service]
+User=root
+Group=www-data
+WorkingDirectory=/home/bookstore
+ExecStart=/home/bookstore/env/bin/gunicorn --access-logfile - --workers 3 --bind unix:/run/gunicorn.sock bookstore.wsgi:application
+[Install]
+WantedBy=multi-user.target
+
+drwxr-xr-x ///////logs
+-rwxr-xr-x gunicorn.access.log gunicorn.error.log

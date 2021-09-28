@@ -70,7 +70,7 @@ def user_directory_path(instance, filename):
 class Book(models.Model):
     code = models.CharField(max_length=10, unique=True)
     slug = models.SlugField(max_length=200, unique=True)
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, unique=True)
     category = models.ForeignKey(
         Category, null=True, blank=True, on_delete=models.CASCADE)
     author = models.ManyToManyField(Author, blank=True)

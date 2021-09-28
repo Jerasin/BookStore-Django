@@ -20,5 +20,7 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('system-admin/', admin.site.urls),
-    path('',include(('stock_book.urls','stock_book') , namespace='stock_book')),
-] + static(settings.MEDIA_URL , document_root=settings.MEDIA_ROOT)
+    path('bookstore/',include(('stock_book.urls','stock_book') , namespace='stock_book')),
+] 
+urlpatterns += static(settings.MEDIA_URL , document_root=settings.MEDIA_ROOT) 
+urlpatterns += static(settings.STATIC_URL , document_root=settings.STATIC_ROOT)

@@ -1,7 +1,7 @@
-# import buildin class Model method 
+# import buildin class Model method
 from django.db.models.base import Model
 
-# import buildin class View method 
+# import buildin class View method
 from django.views.generic import ListView, DetailView
 
 # import buildin  function  paginator
@@ -14,7 +14,7 @@ from django.contrib import messages
 from django.shortcuts import render, get_object_or_404, redirect
 
 # import Models from models.py
-from .models import Category, Book, SalesOrder, SalesOrderList , Address , CustomUser , BookComments , Author
+from .models import Category, Book, SalesOrder, SalesOrderList, Address, CustomUser, BookComments, Author
 
 # import buildin  function  urls
 from django.urls import reverse
@@ -26,7 +26,7 @@ from django.http import HttpResponseRedirect
 from slugify import slugify
 
 # import Forms from forms.py
-from .forms import BookForm , CreateUserForm , AddressForm , CreateAuthorForm , CreateCategoryForm , CreateCommentForm , CustomUserForm
+from .forms import BookForm, CreateUserForm, AddressForm, CreateAuthorForm, CreateCategoryForm, CreateCommentForm, CustomUserForm
 
 # import buildin class  Paginator
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -79,6 +79,7 @@ class Index(ListView):
 
         return cd
 
+
 class BookView(ListView):
     model = Book
     template_name = 'book/book_list.html'
@@ -93,6 +94,7 @@ class BookView(ListView):
     def get_context_data(self, *args, **kwargs):
         cd = super(BookView, self). get_context_data(*args, **kwargs)
         return cd
+
 
 class UserView(ListView):
     model = CustomUser
@@ -109,31 +111,31 @@ class UserView(ListView):
         cd = super(UserView, self). get_context_data(*args, **kwargs)
         return cd
 
-def user_delete(request,pk):
+
+def user_delete(request, pk):
     user_delete = CustomUser.objects.get(id=pk)
-    print(user_delete)
-    user_delete.delete()    
+    user_delete.delete()
     messages.success(request, 'Delete Success')
     return HttpResponseRedirect(reverse('stock_book:users_list', kwargs={}))
 
 
-def user_update(request,pk):
+def user_update(request, pk):
     session = CustomUser.objects.get(id=pk)
     if request.method == 'GET':
-            form = CustomUserForm(instance=session)
+        form = CustomUserForm(instance=session)
     if request.method == 'POST':
-            form = CustomUserForm(request.POST, instance=session)
-            if form.is_valid():
-                form.save()
-            # form.save_m2m()
-                messages.success(request, 'Save success')
-                return HttpResponseRedirect(reverse('stock_book:users_list', kwargs={}))
+        form = CustomUserForm(request.POST, instance=session)
+        if form.is_valid():
+            form.save()
+        # form.save_m2m()
+            messages.success(request, 'Save success')
+            return HttpResponseRedirect(reverse('stock_book:users_list', kwargs={}))
     return render(request, 'users/user_edit.html', {
         'form': form,
     })
 
 
-class BookDetailView(DetailView,MultipleObjectMixin):
+class BookDetailView(DetailView, MultipleObjectMixin):
     model = Book
     template_name = 'book/detail.html'
     slug_url_kwarg = 'slug'
@@ -141,8 +143,8 @@ class BookDetailView(DetailView,MultipleObjectMixin):
 
     def get_context_data(self, **kwargs):
         object_list = BookComments.objects.filter(book_id=self.object.pk)
-        context = super(BookDetailView, self).get_context_data(object_list=object_list, **kwargs)
-        print(context)
+        context = super(BookDetailView, self).get_context_data(
+            object_list=object_list, **kwargs)
         return context
 
 
@@ -178,12 +180,12 @@ def author_add(request):
     })
 
 
-def author_delete(request,pk):
+def author_delete(request, pk):
     author_delete = Author.objects.get(id=pk)
-    author_delete.delete()    
+    author_delete.delete()
     messages.success(request, 'Delete Success')
     return HttpResponseRedirect(reverse('stock_book:author_list', kwargs={}))
-   
+
 
 class CategoryView(ListView):
     model = Category
@@ -200,6 +202,7 @@ class CategoryView(ListView):
         cd = super(CategoryView, self). get_context_data(*args, **kwargs)
         return cd
 
+
 def category_add(request):
     # form
     form = CreateCategoryForm()
@@ -209,23 +212,21 @@ def category_add(request):
         if form.is_valid():
             form.save()
             messages.success(request, 'Save success')
-            return HttpResponseRedirect(reverse('stock_book:index', kwargs={}))
+            return HttpResponseRedirect(reverse('stock_book:category_list', kwargs={}))
         messages.error(request, 'Save Failed')
     return render(request, 'book/category_form.html', {
         'form': form,
     })
 
 
-def category_delete(request,pk):
+def category_delete(request, pk):
     category_delete = Category.objects.get(id=pk)
-    category_delete.delete()    
+    category_delete.delete()
     messages.success(request, 'Delete Success')
     return HttpResponseRedirect(reverse('stock_book:category_list', kwargs={}))
-   
 
 
 def book_add(request):
-    # form
     form = BookForm()
     if request.method == 'POST':
         form = BookForm(request.POST, request.FILES)
@@ -238,21 +239,25 @@ def book_add(request):
             form.save_m2m()
             messages.success(request, 'Save success')
             return HttpResponseRedirect(reverse('stock_book:index', kwargs={}))
-        messages.error(request, 'Save Failed')
     return render(request, 'book/add.html', {
         'form': form,
     })
 
-def book_update(request,pk):
+
+def book_update(request, pk):
     session = Book.objects.get(id=pk)
-    imageUrl = "/media/{}".format(session.image)
+    imageUrl = ''
+    imageDeletePath = ''
+    if session.image:
+        imageDeletePath = session.image.path
+        imageUrl = "/media/{}".format(session.image)
     if request.method == 'GET':
-            form = BookForm(instance=session)
+        form = BookForm(instance=session)
     if request.method == 'POST':
-            form = BookForm(request.POST, request.FILES,instance=session)
-            if request.FILES:
-                os.remove(session.image.path)
-            # book = form.save(commit=False)
+        form = BookForm(request.POST, request.FILES, instance=session)
+        if form.is_valid():
+            if request.FILES and imageDeletePath:
+                os.remove(imageDeletePath)
             # book.created_by_id = request.user.id
             # book.slug = slugify(book.name)
             # book.published = True
@@ -260,22 +265,24 @@ def book_update(request,pk):
             # form.save_m2m()
             messages.success(request, 'Save success')
             return HttpResponseRedirect(reverse('stock_book:index', kwargs={}))
+        messages.error(request, 'Save Failed')
     return render(request, 'book/add.html', {
         'form': form,
-        'imageUrl':imageUrl,
+        'imageUrl': imageUrl,
 
     })
 
-def book_delete(request,pk):
+
+def book_delete(request, pk):
     book_delete = Book.objects.get(id=pk)
     if book_delete.image:
         book_delete.delete()
         os.remove(book_delete.image.path)
-        print("Delete")
+    else:
+        book_delete.delete()
     messages.success(request, 'Delete Success')
     return HttpResponseRedirect(reverse('stock_book:book_list', kwargs={}))
-        
-    
+
 
 def comment_add(request, slug):
     # form
@@ -300,7 +307,6 @@ def comment_add(request, slug):
 def cart_add(request, slug):
     # query ข้อมูลที่ Model ที่ชื่อ Book โดย where จาก slug
     book = get_object_or_404(Book, slug=slug)
-    print(book)
     # ดึงค่า seesion จาก key = 'cart_items' ถ้าไม่มีค่าให้ส่งเป็น [] แทน
     cart_items = request.session.get('cart_items') or []
 
@@ -356,7 +362,7 @@ class CartListView(ListView):
         return cart_items
 
     def get_context_data(self, *args, **kwargs):
-        cd = super(CartListView, self). get_context_data(*args, **kwargs)    
+        cd = super(CartListView, self). get_context_data(*args, **kwargs)
         return cd
 
 
@@ -376,23 +382,25 @@ def cart_delete_all(request):
     request.session['cart_items'] = cart_items
     return HttpResponseRedirect(reverse('stock_book:cart_list', kwargs={}))
 
-def edit_address(request,username):   
+
+def edit_address(request, username):
     try:
         get_user_id = CustomUser.objects.get(username=username)
-        get_address = Address.objects.get(user_id=get_user_id) 
+        get_address = Address.objects.get(user_id=get_user_id)
         cart_items = request.session.get('cart_items') or []
-        total_qty = 0;
-        total_price = 0;
+        total_qty = 0
+        total_price = 0
     except:
         get_user_id = CustomUser.objects.get(username=username)
         get_address = ''
         cart_items = request.session.get('cart_items') or []
-        total_qty = 0;
-        total_price = 0; 
+        total_qty = 0
+        total_price = 0
     for item in cart_items:
         # print(item['qty'])
         total_qty = int(total_qty) + int(item['qty'])
-        total_price = float(total_price) + (float(item['price']) * int(item.get('qty')) )
+        total_price = float(total_price) + \
+            (float(item['price']) * int(item.get('qty')))
     # print('total_qty',total_qty)
     # print('total_price',total_price)
     # print('saleorder_code_running',saleorder_code_running)
@@ -400,21 +408,21 @@ def edit_address(request,username):
         'get_address': get_address,
         'saleorder_code_running': saleorder_code_running,
         'total_qty': total_qty,
-        'total_price':total_price,
+        'total_price': total_price,
     })
 
-def updated_address(request):   
+
+def updated_address(request):
     if request.method == "POST":
         username = request.user
         if request.POST.get('address'):
-            print(request.POST.get('address'))
-            Address.objects.filter(user_id=request.user.id).update(address=request.POST.get('address'))
-            messages.success(request, 'Update Success')
+            Address.objects.filter(user_id=request.user.id).update(
+                address=request.POST.get('address'))
+            messages.success(request, 'Update Address Success')
         else:
             messages.error(request, 'Save Failed')
-        url = reverse('stock_book:edit_address' , kwargs={'username': username})
+        url = reverse('stock_book:edit_address', kwargs={'username': username})
         return HttpResponseRedirect(url)
-
 
 
 def edit_qty(request):
@@ -429,7 +437,6 @@ def edit_qty(request):
             if cart_items[index]['slug'] == queryDict_to_Dict['slug'][item]:
                 cart_items[index]['qty'] = queryDict_to_Dict['qty'][item]
                 break
-    print("edit_qty",queryDict_to_Dict)
     request.session['cart_items'] = cart_items
 
     return HttpResponseRedirect(reverse('stock_book:cart_list', kwargs={}))
@@ -447,7 +454,6 @@ def login_view(request):
             login(request, user)
             # return HttpResponseRedirect(reverse('book:index'))
             # หรือใช้
-            print('Login')
             return redirect('stock_book:index')
     else:
         # สร้าง form login
@@ -460,7 +466,6 @@ def login_view(request):
 def logout_view(request):
     if request.method == 'POST':
         logout(request)
-        print('Logout')
         return redirect('stock_book:index')
 
 
@@ -472,11 +477,10 @@ def signup_view(request):
         get_address = request.POST.get('address')
         if users_form.is_valid() and get_address:
             user = users_form.save()
-            # หาค่า id จาก username 
-            # sql statement = SELECT id FROM CustomUser WHERE username = 'get_username' 
+            # หาค่า id จาก username
+            # sql statement = SELECT id FROM CustomUser WHERE username = 'get_username'
             get_id = CustomUser.objects.get(username=get_username).id
-            print('id',get_id)
-            created_address = Address(user_id=get_id , address=get_address)
+            created_address = Address(user_id=get_id, address=get_address)
             address = created_address.save()
             login(request, user)
             return redirect('stock_book:index')
@@ -488,16 +492,18 @@ def signup_view(request):
         'address_form': address_form
     })
 
+
 saleorder_code_running = 1006
+
 
 def create_salesorder(request, user_id):
     grand_total = 0
-    global saleorder_code_running;
+    global saleorder_code_running
     cart_items = request.session['cart_items'] or []
     address = Address.objects.get(user_id=user_id)
     try:
         salesorder_list_save = SalesOrderList.objects.create(
-            saleorder_code= saleorder_code_running,
+            saleorder_code=saleorder_code_running,
             grand_total=grand_total,
             created_by_id=user_id,
             address=address
@@ -505,7 +511,6 @@ def create_salesorder(request, user_id):
         for value in cart_items:
             sum_price = float(value['price']) * float(value['qty'])
             grand_total += sum_price
-            print(grand_total)
             salesorder_save = SalesOrder.objects.create(saleorder_code_id=saleorder_code_running,
                                                         product_code=value['code'],
                                                         product_name=value['name'],
@@ -517,15 +522,19 @@ def create_salesorder(request, user_id):
         SalesOrderList.objects.filter(
             saleorder_code=saleorder_code_running).update(grand_total=grand_total, )
         saleorder_code_running += 1
-        print(saleorder_code_running)
+        # print(saleorder_code_running)
 
         # Reset Session
         request.session['cart_items'] = []
         request.session['cart_qty'] = []
 
         return redirect('stock_book:index')
-    except:
-        print('Error')
+    except Exception as e:
+        # print(saleorder_code_running)
+        current_saleorder_code_running = saleorder_code_running
+        while saleorder_code_running <= current_saleorder_code_running:
+            saleorder_code_running += 1
+        return create_salesorder(request, user_id)
 
 
 class HistoryListView(ListView):
@@ -538,21 +547,20 @@ class HistoryListView(ListView):
         # print(dir(self))
         # เช็คว่าเป็น Super CustomUser รึป่าว
         # print(self.request.user.is_superuser)
-        checkSuperUser = self.request.user.is_superuser;
-        print("start",checkSuperUser)
+        checkSuperUser = self.request.user.is_superuser
 
         if checkSuperUser:
             history = SalesOrderList.objects.all()
-            print("checkSuperUser")
         else:
             get_user_id = CustomUser.objects.get(username=self.request.user)
-            history = SalesOrderList.objects.filter(created_by_id=get_user_id).all()
-            print(history)  
+            history = SalesOrderList.objects.filter(
+                created_by_id=get_user_id).all()
         return history
 
     def get_context_data(self, *args, **kwargs):
         cd = super(HistoryListView, self). get_context_data(*args, **kwargs)
         return cd
+
 
 class DetailOrderListView(ListView):
     Model = SalesOrder
@@ -576,6 +584,7 @@ class DetailOrderListView(ListView):
         })
         return cd
 
+
 class DetailSalesOrderListView(ListView):
     Model = SalesOrder
     template_name = 'book/salesorder.html'
@@ -592,9 +601,9 @@ class DetailSalesOrderListView(ListView):
         cd = super(DetailSalesOrderListView,
                    self). get_context_data(*args, **kwargs)
         saleorder_code = self.kwargs['salesorder']
-        saleorder_status = SalesOrderList.objects.filter(saleorder_code=saleorder_code)
+        saleorder_status = SalesOrderList.objects.filter(
+            saleorder_code=saleorder_code)
         for item in saleorder_status:
-            print(item.saleorder_status)
             if item.saleorder_status == 'wait':
                 saleorder_status = False
             else:
@@ -611,10 +620,12 @@ def set_approve(request, salesorder):
         saleorder_code=salesorder).update(saleorder_status='approve')
     return redirect('stock_book:dashboard_page')
 
+
 def set_reject(request, salesorder):
     SalesOrderList.objects.filter(
         saleorder_code=salesorder).update(saleorder_status='reject')
-    return redirect('stock_book:salesorder_detail')
+    return redirect('stock_book:dashboard_page')
+
 
 class DashBoardView(ListView):
     Model = SalesOrderList
@@ -626,15 +637,18 @@ class DashBoardView(ListView):
         # เอาไว้ log ดู attibutes ของ class ทั้งหมด
         salesorder_list = ''
         return salesorder_list
-    
-    def get_context_data(self, *args, **kwargs):
-        cd = super(DashBoardView,self). get_context_data(*args, **kwargs)
-        count_customers = CustomUser.objects.all().count()
-        count_orders_approve = SalesOrderList.objects.filter(saleorder_status='approve').all().count()
-        count_orders_wait = SalesOrderList.objects.filter(saleorder_status='wait').all().count()
-        count_orders_reject = SalesOrderList.objects.filter(saleorder_status='reject').all().count()
 
-        grand_total = {'grand_total__sum':0}
+    def get_context_data(self, *args, **kwargs):
+        cd = super(DashBoardView, self). get_context_data(*args, **kwargs)
+        count_customers = CustomUser.objects.all().count()
+        count_orders_approve = SalesOrderList.objects.filter(
+            saleorder_status='approve').all().count()
+        count_orders_wait = SalesOrderList.objects.filter(
+            saleorder_status='wait').all().count()
+        count_orders_reject = SalesOrderList.objects.filter(
+            saleorder_status='reject').all().count()
+
+        grand_total = {'grand_total__sum': 0}
         now = datetime.now()
         year = now.strftime("%Y")
         month = now.strftime("%m")
@@ -643,7 +657,7 @@ class DashBoardView(ListView):
         date_now_to = "{}-{}-{}".format(year, month, day)
         cd.update({
             'count_customers': count_customers,
-            'count_orders_approve':count_orders_approve,
+            'count_orders_approve': count_orders_approve,
             'count_orders_wait': count_orders_wait,
             'count_orders_reject': count_orders_reject,
             'date_now_from': date_now_from,
@@ -651,6 +665,7 @@ class DashBoardView(ListView):
             'grand_total': grand_total,
         })
         return cd
+
 
 class SearchDetailView(ListView):
     Model = SalesOrderList
@@ -663,67 +678,72 @@ class SearchDetailView(ListView):
 
     def get_queryset(self):
 
-        current_date_from = self.request.POST.get('date_from');
-        current_date_to = self.request.POST.get('date_to');
-        customer_name = self.request.POST.get('customer_name');
-        salesorder_code = self.request.POST.get('salesorder_code');
+        current_date_from = self.request.POST.get('date_from')
+        current_date_to = self.request.POST.get('date_to')
+        customer_name = self.request.POST.get('customer_name')
+        salesorder_code = self.request.POST.get('salesorder_code')
 
         if current_date_from and current_date_to and customer_name and salesorder_code:
             user_id = CustomUser.objects.get(username=customer_name).id
-            salesorder_list = SalesOrderList.objects.filter(created__range=[current_date_from, current_date_to],created_by_id=user_id,saleorder_code=salesorder_code).all()
+            salesorder_list = SalesOrderList.objects.filter(created__range=[
+                                                            current_date_from, current_date_to], created_by_id=user_id, saleorder_code=salesorder_code).all()
         elif current_date_from and current_date_to and customer_name:
             user_id = CustomUser.objects.get(username=customer_name).id
-            salesorder_list = SalesOrderList.objects.filter(created__range=[current_date_from, current_date_to],created_by_id=user_id).all()
+            salesorder_list = SalesOrderList.objects.filter(
+                created__range=[current_date_from, current_date_to], created_by_id=user_id).all()
         elif current_date_from and current_date_to and salesorder_code:
             user_id = CustomUser.objects.get(username=customer_name).id
-            salesorder_list = SalesOrderList.objects.filter(created__range=[current_date_from, current_date_to],saleorder_code=salesorder_code).all()
+            salesorder_list = SalesOrderList.objects.filter(created__range=[
+                                                            current_date_from, current_date_to], saleorder_code=salesorder_code).all()
         else:
-            salesorder_list = SalesOrderList.objects.filter(created__range=[current_date_from, current_date_to]).all()
+            salesorder_list = SalesOrderList.objects.filter(
+                created__range=[current_date_from, current_date_to]).all()
         return salesorder_list
 
     def get_context_data(self, *args, **kwargs):
-        cd = super(SearchDetailView,self). get_context_data(*args, **kwargs)
+        cd = super(SearchDetailView, self). get_context_data(*args, **kwargs)
         count_customers = CustomUser.objects.all().count()
-        count_orders_approve = SalesOrderList.objects.filter(saleorder_status='approve').all().count()
-        count_orders_wait = SalesOrderList.objects.filter(saleorder_status='wait').all().count()
-        count_orders_reject = SalesOrderList.objects.filter(saleorder_status='reject').all().count()
+        count_orders_approve = SalesOrderList.objects.filter(
+            saleorder_status='approve').all().count()
+        count_orders_wait = SalesOrderList.objects.filter(
+            saleorder_status='wait').all().count()
+        count_orders_reject = SalesOrderList.objects.filter(
+            saleorder_status='reject').all().count()
 
-        current_date_from = self.request.POST.get('date_from');
-        current_date_to = self.request.POST.get('date_to');
+        current_date_from = self.request.POST.get('date_from')
+        current_date_to = self.request.POST.get('date_to')
 
-        current_date_from = self.request.POST.get('date_from');
-        current_date_to = self.request.POST.get('date_to');
-        customer_name = self.request.POST.get('customer_name');
-        salesorder_code = self.request.POST.get('salesorder_code');
+        current_date_from = self.request.POST.get('date_from')
+        current_date_to = self.request.POST.get('date_to')
+        customer_name = self.request.POST.get('customer_name')
+        salesorder_code = self.request.POST.get('salesorder_code')
 
         if current_date_from and current_date_to and customer_name and salesorder_code:
             user_id = CustomUser.objects.get(username=customer_name).id
-            grand_total = SalesOrderList.objects.filter(created__range=[current_date_from, current_date_to],created_by_id=user_id,saleorder_code=salesorder_code).all().aggregate(Sum('grand_total'))
+            grand_total = SalesOrderList.objects.filter(created__range=[
+                                                        current_date_from, current_date_to], created_by_id=user_id, saleorder_code=salesorder_code).all().aggregate(Sum('grand_total'))
         elif current_date_from and current_date_to and customer_name:
             user_id = CustomUser.objects.get(username=customer_name).id
-            grand_total = SalesOrderList.objects.filter(created__range=[current_date_from, current_date_to],created_by_id=user_id).all().aggregate(Sum('grand_total'))
+            grand_total = SalesOrderList.objects.filter(created__range=[
+                                                        current_date_from, current_date_to], created_by_id=user_id).all().aggregate(Sum('grand_total'))
         elif current_date_from and current_date_to and salesorder_code:
             user_id = CustomUser.objects.get(username=customer_name).id
-            grand_total = SalesOrderList.objects.filter(created__range=[current_date_from, current_date_to],saleorder_code=salesorder_code).all().aggregate(Sum('grand_total'))
+            grand_total = SalesOrderList.objects.filter(created__range=[
+                                                        current_date_from, current_date_to], saleorder_code=salesorder_code).all().aggregate(Sum('grand_total'))
         else:
-            grand_total = SalesOrderList.objects.filter(created__range=[current_date_from, current_date_to]).all().aggregate(Sum('grand_total'))
+            grand_total = SalesOrderList.objects.filter(created__range=[
+                                                        current_date_from, current_date_to]).all().aggregate(Sum('grand_total'))
 
         if grand_total['grand_total__sum'] == None:
-            grand_total = {'grand_total__sum':0}
+            grand_total = {'grand_total__sum': 0}
 
         cd.update({
             'count_customers': count_customers,
-            'count_orders_approve':count_orders_approve,
+            'count_orders_approve': count_orders_approve,
             'count_orders_wait': count_orders_wait,
             'count_orders_reject': count_orders_reject,
             'date_now_from': current_date_from,
             'date_now_to': current_date_to,
-            'grand_total':grand_total,
+            'grand_total': grand_total,
         })
         return cd
-
-
-
-
-
-

@@ -9,14 +9,15 @@
 <div class="container">
     <div class="row mt-5">
         <div class="col-lg-3">
+            <div class="card">
             {% if book.image %}
             <img src="{{ book.image.url }}" class=""alt="">
             {% endif %}
     
             {% if not book.image %}
-            <img src="../.././media/public/no_image.jpg" class=""alt="">
+            <img src="/media/public/no_image_2.jpg" class=""alt="">
             {% endif %}
-    
+            </div>
         </div>
         <div class="col-lg-9">
             <div class="row">

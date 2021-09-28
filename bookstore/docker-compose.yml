@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  django:
+    build: 
+      context: ./
+      dockerfile: Dockerfile
+    container_name: django_bookstore
+    # command: python manage.py runserver 0.0.0.0:8000
+
+    # use command after config nginx
+    command: gunicorn bookstore.wsgi:application --bind 0.0.0.0:8000
+
+    # เอาไว้ลิ้งค์กับระหว่าง local กับ Sever
+    # use command for Check Path local and Sever "docker  inspect django_bookstore"
+    volumes:
+      - ./:/django-app
+
+    ports:
+      - 8000:8000
+
+    # use command aftef config nginx
+      # - 8000
+    env_file:
+      - ./.env
+    depends_on: 
+      - pgdb
+  pgdb:
+    image: postgres
+    container_name: postgres
+    volumes:
+      - postgres_data:/django-app
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=bookstore
+volumes:
+  postgres_data:

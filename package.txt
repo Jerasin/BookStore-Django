@@ -22,3 +22,27 @@ Step8 : hide SECRET_KEY  heroku config:set SECRET_KEY = 'django-insecure-gx%xf5_
 Step9 : setting.py "DEBUG = False" and "ALLOWED_HOSTS = ['you hostname']"
 Step10 : create static folder "python manage.py collectstatic --noinput"
 Step11 : git add . and git commit and git push heroku master
+
+////////////////////////////////////////////////////////////////
+Docker
+---------------------- Run Container Django SqliteDB ------------------------------
+Step1 : Create file Dockerfile in project directly
+Step2 : use command line "docker build --tag django-bookstore ."
+Step3 : use command line "docker run --publish 8000:8000 django-bookstore"
+
+---------------------- Run Container Django PostgresDB ------------------------------
+Step1 : Create file docker-compose.yml in project directly
+Step2 : use command line "docker-compose up -d"
+Step3 : use command line "docker-compose down -v" to remove the volumes along with the containers. Then, re-build the images, run the containers, and apply the migrations.
+Step4 : create table use command line "docker-compose run django python manage.py migrate"
+Step5 : recheck table use command line "docker exec -it postgres psql -U  postgres"
+Step6 : check db name use command line "\l"
+Step7 : access db name use command line "\c 'databasename' "
+Step8 : recheck row database use command line "\dt "
+Step9 : access Container use command line "docker exec -it "container id" sh"
+Step10 : Check os Container in Path root/etc/os-release
+Step11 : Remove Docker-compose use command line "docker-compose down --remove-orphans"
+
+
+
+
